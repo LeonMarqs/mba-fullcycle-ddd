@@ -7,17 +7,17 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"apps/**/*.ts\"",
+    "format": "prettier --write \"**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/mba-fullcycle-ddd-ingressos/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "start:prod": "node dist/mba-fullcycle-ddd-ingressos/main",
+    "lint": "eslint \"{src,libs,test}/**/*.ts\" --fix",
     "test": "jest --runInBand",
     "test:watch": "jest --watch --runInBand",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/mba-fullcycle-ddd-ingressos/test/jest-e2e.json",
+    "test:e2e": "jest --config ./mba-fullcycle-ddd-ingressos/test/jest-e2e.json",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -47,6 +47,7 @@
     "@swc/jest": "^0.2.26",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/lodash": "^4.17.6",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
@@ -82,13 +83,13 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
+      "<rootDir>/"
     ]
   },
   "mikro-orm": {
     "useTsNode": true,
     "configPaths": [
-      "./apps/mba-fullcycle-ddd-ingressos/src/mikro-orm.config.ts",
+      "./mba-fullcycle-ddd-ingressos/src/mikro-orm.config.ts",
       "./dist/mikro-orm.config.js"
     ]
   }
