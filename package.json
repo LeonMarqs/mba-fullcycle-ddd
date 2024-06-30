@@ -11,13 +11,13 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/mba-fullcycle-ddd-ingressos/main",
-    "lint": "eslint \"{src,libs,test}/**/*.ts\" --fix",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --runInBand",
     "test:watch": "jest --watch --runInBand",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./mba-fullcycle-ddd-ingressos/test/jest-e2e.json",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -50,6 +50,7 @@
     "@types/lodash": "^4.17.6",
     "@types/node": "^20.3.1",
     "@types/supertest": "^2.0.12",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "eslint": "^8.42.0",
@@ -84,12 +85,18 @@
     "testEnvironment": "node",
     "roots": [
       "<rootDir>/"
+    ],
+    "modulePaths": [
+      "<rootDir>"
+    ],
+    "moduleDirectories": [
+      "node_modules"
     ]
   },
   "mikro-orm": {
     "useTsNode": true,
     "configPaths": [
-      "./mba-fullcycle-ddd-ingressos/src/mikro-orm.config.ts",
+      "./src/mikro-orm.config.ts",
       "./dist/mikro-orm.config.js"
     ]
   }
