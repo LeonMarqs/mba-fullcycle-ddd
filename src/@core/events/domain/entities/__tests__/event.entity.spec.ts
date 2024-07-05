@@ -17,12 +17,12 @@ test('Deve criar um evento', () => {
     total_spots: 12,
   });
 
-  expect(event.sections.size).toBe(1);
+  expect(event._sections.size).toBe(1);
   expect(event.total_spots).toBe(12);
 
-  const [section] = event.sections;
+  const [section] = event._sections;
 
-  expect(section.spots.size).toBe(12);
+  expect(section._spots.size).toBe(12);
 });
 
 test('Deve publicar todos os itens do evento', () => {
@@ -52,12 +52,12 @@ test('Deve publicar todos os itens do evento', () => {
 
   expect(event.is_published).toBe(true);
 
-  const [section1, section2] = event.sections.values();
+  const [section1, section2] = event._sections.values();
 
   expect(section1.is_published).toBe(true);
   expect(section2.is_published).toBe(true);
 
-  [...section1.spots, ...section2.spots].forEach((spot) => {
+  [...section1._spots, ...section2._spots].forEach((spot) => {
     expect(spot.is_published).toBe(true);
   });
 });
