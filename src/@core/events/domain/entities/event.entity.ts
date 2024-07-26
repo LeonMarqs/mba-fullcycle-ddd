@@ -5,7 +5,8 @@ import {
 } from 'src/@core/common/domain/my-collection';
 import { AggregateRoot } from '../../../common/domain/aggregate-root';
 import Uuid from '../../../common/domain/value-objects/uuid.vo';
-import { EventSection } from './event-section';
+import { EventSection, EventSectionId } from './event-section';
+import { EventSpotId } from './event-spot';
 import { PartnerId } from './partner.entity';
 
 export class EventId extends Uuid {}
@@ -33,6 +34,12 @@ export type EventConstructorProps = {
   total_spots: number;
   total_spots_reserved: number;
   partner_id: PartnerId | string;
+};
+
+export type ChangeSectionInformationCommand = {
+  section_id: EventSectionId;
+  name: string;
+  description?: string | null;
 };
 
 export class Event extends AggregateRoot {
@@ -81,6 +88,35 @@ export class Event extends AggregateRoot {
     const newSection = EventSection.create(command);
     this.total_spots += newSection.total_spots;
     this._sections.add(newSection);
+  }
+
+  changeSectionInformation(command: ChangeSectionInformationCommand) {
+    const section = this.findSectionById(command.section_id);
+
+    if (!section) {
+      throw new Error('Section not found');
+    }
+
+    'name' in command && section.changeName(command.name);
+    'description' in command && section.changeDescription(command.description);
+  }
+
+  changeLocation(command: {
+    section_id: EventSectionId;
+    spot_id: EventSpotId;
+    location: string;
+  }) {
+    const section = this.findSectionById(command.section_id);
+
+    if (!section) {
+      throw new Error('Section not found');
+    }
+
+    section.changeLocation(command);
+  }
+
+  findSectionById(section_id: EventSectionId) {
+    return this._sections.find((section) => section.id.equals(section_id));
   }
 
   changeName(name: string) {

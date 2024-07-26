@@ -17,12 +17,12 @@ test('Deve criar um evento', () => {
     total_spots: 12,
   });
 
-  expect(event._sections.size).toBe(1);
+  expect(event.sections.size).toBe(1);
   expect(event.total_spots).toBe(12);
 
-  const [section] = event._sections;
+  const [section] = event.sections;
 
-  expect(section._spots.size).toBe(12);
+  expect(section.spots.size).toBe(12);
 });
 
 test('Deve publicar todos os itens do evento', () => {
