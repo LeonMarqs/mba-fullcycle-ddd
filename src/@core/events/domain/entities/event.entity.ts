@@ -115,6 +115,35 @@ export class Event extends AggregateRoot {
     section.changeLocation(command);
   }
 
+  allowReserveSpot(data: { section_id: EventSectionId; spot_id: EventSpotId }) {
+    if (!this.is_published) {
+      return false;
+    }
+
+    const section = this.sections.find((s) => s.id.equals(data.section_id));
+    if (!section) {
+      throw new Error('Section not found');
+    }
+
+    return section.allowReserveSpot(data.spot_id);
+  }
+
+  markSpotAsReserved(command: {
+    section_id: EventSectionId;
+    spot_id: EventSpotId;
+  }) {
+    const section = this.sections.find((s) => s.id.equals(command.section_id));
+
+    if (!section) {
+      throw new Error('Section not found');
+    }
+
+    section.markSpotAsReserved(command.spot_id);
+    // this.addEvent(
+    //   new EventMarkedSportAsReserved(this.id, section.id, command.spot_id),
+    // );
+  }
+
   findSectionById(section_id: EventSectionId) {
     return this._sections.find((section) => section.id.equals(section_id));
   }

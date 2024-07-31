@@ -52,12 +52,12 @@ test('Deve publicar todos os itens do evento', () => {
 
   expect(event.is_published).toBe(true);
 
-  const [section1, section2] = event._sections.values();
+  const [section1, section2] = event.sections.values();
 
   expect(section1.is_published).toBe(true);
   expect(section2.is_published).toBe(true);
 
-  [...section1._spots, ...section2._spots].forEach((spot) => {
+  [...section1.spots, ...section2.spots].forEach((spot) => {
     expect(spot.is_published).toBe(true);
   });
 });
