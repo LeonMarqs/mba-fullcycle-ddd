@@ -17,7 +17,7 @@ export class CustomerService {
     return this.customerRepo.findAll();
   }
 
-  async register(input: RegisterCustomerDTO) {
+  async create(input: RegisterCustomerDTO) {
     const customer = Customer.create(input);
     this.customerRepo.add(customer);
     await this.uow.commit();

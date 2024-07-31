@@ -54,7 +54,7 @@ test('Deve registrar um novo customer', async () => {
   const customerRepo = new CustomerMysqlRepository(em);
   const customerService = new CustomerService(customerRepo, unitOfWork);
 
-  const customer = await customerService.register({
+  const customer = await customerService.create({
     name: 'Customer 1',
     cpf: '703.758.870-91',
   });
