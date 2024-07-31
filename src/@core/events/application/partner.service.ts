@@ -1,4 +1,4 @@
-import { IUnitOfWork } from 'src/@core/common/application/unit-of-work.interface';
+import { IUnitOfWork } from '../../common/application/unit-of-work.interface';
 import { Partner } from '../domain/entities/partner.entity';
 import { IPartnerRepository } from '../domain/repositories/partner-repository.interface';
 
@@ -16,7 +16,7 @@ export class PartnerService {
     return this.partnerRepo.findAll();
   }
 
-  async register(input: RegisterPartnerDTO) {
+  async create(input: RegisterPartnerDTO) {
     const partner = Partner.create(input);
     this.partnerRepo.add(partner);
     await this.uow.commit();

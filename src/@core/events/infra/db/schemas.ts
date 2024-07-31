@@ -1,5 +1,5 @@
 import { Cascade, EntitySchema } from '@mikro-orm/core';
-import { Partner } from 'src/@core/events/domain/entities/partner.entity';
+import { Partner } from '../../../events/domain/entities/partner.entity';
 import { Customer } from '../../domain/entities/customer.entity';
 import { EventSection } from '../../domain/entities/event-section';
 import { EventSpot } from '../../domain/entities/event-spot';

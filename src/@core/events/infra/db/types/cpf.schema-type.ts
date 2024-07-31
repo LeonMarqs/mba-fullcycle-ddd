@@ -1,5 +1,5 @@
 import { EntityProperty, Platform, Type } from '@mikro-orm/core';
-import Cpf from 'src/@core/common/domain/value-objects/cpf.vo';
+import Cpf from '../../../../common/domain/value-objects/cpf.vo';
 
 export class CpfSchemaType extends Type<Cpf, string> {
   convertToDatabaseValue(

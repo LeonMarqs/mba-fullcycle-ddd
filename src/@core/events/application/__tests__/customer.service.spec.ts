@@ -1,5 +1,5 @@
 import { MikroORM, MySqlDriver } from '@mikro-orm/mysql';
-import { UnitOfWorkMikroOrm } from 'src/@core/common/infra/unit-of-work-mikro-orm';
+import { UnitOfWorkMikroOrm } from '../../../common/infra/unit-of-work-mikro-orm';
 import { Customer } from '../../domain/entities/customer.entity';
 import { CustomerMysqlRepository } from '../../infra/db/repositories/customer-mysql.repository';
 import { CustomerSchema } from '../../infra/db/schemas';

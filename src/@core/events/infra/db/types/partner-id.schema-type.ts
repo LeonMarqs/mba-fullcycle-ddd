@@ -1,5 +1,5 @@
 import { EntityProperty, Platform, Type } from '@mikro-orm/core';
-import { PartnerId } from 'src/@core/events/domain/entities/partner.entity';
+import { PartnerId } from '../../../../events/domain/entities/partner.entity';
 export class PartnerIdSchemaType extends Type<PartnerId, string> {
   convertToDatabaseValue(
     valueObject: PartnerId | undefined | null,

@@ -1,5 +1,5 @@
 import { MikroORM, MySqlDriver } from '@mikro-orm/mysql';
-import { Partner } from 'src/@core/events/domain/entities/partner.entity';
+import { Partner } from '../../../../../events/domain/entities/partner.entity';
 import { PartnerSchema } from '../../schemas';
 
 test('Deve criar um partner', async () => {

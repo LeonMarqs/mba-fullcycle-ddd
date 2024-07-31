@@ -1,4 +1,3 @@
-import { PaymentGateway } from 'src/@core/common/application/payment.gateway';
 import { IUnitOfWork } from '../../common/application/unit-of-work.interface';
 import { EventSectionId } from '../domain/entities/event-section';
 import { EventSpotId } from '../domain/entities/event-spot';
@@ -8,6 +7,7 @@ import { ICustomerRepository } from '../domain/repositories/customer-repository.
 import { IEventRepository } from '../domain/repositories/event-repository.interface';
 import { IOrderRepository } from '../domain/repositories/order-repository.interface';
 import { ISpotReservationRepository } from '../domain/repositories/spot-reservation-repository.interface';
+import { PaymentGateway } from './payment.gateway';
 
 export class OrderService {
   constructor(

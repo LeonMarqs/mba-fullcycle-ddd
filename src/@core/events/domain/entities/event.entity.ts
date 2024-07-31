@@ -2,7 +2,7 @@ import {
   AnyCollection,
   ICollection,
   MyCollectionFactory,
-} from 'src/@core/common/domain/my-collection';
+} from '../../../common/domain/my-collection';
 import { AggregateRoot } from '../../../common/domain/aggregate-root';
 import Uuid from '../../../common/domain/value-objects/uuid.vo';
 import { EventSection, EventSectionId } from './event-section';
