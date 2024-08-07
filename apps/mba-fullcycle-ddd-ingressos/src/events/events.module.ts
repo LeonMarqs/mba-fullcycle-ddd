@@ -1,19 +1,21 @@
 import { EntityManager } from '@mikro-orm/mysql';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { BullModule } from '@nestjs/bull';
+import { BullModule, InjectQueue } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
-// import { ApplicationService } from '../@core/common/application/application.service';
-// import { DomainEventManager } from '../@core/common/domain/domain-event-manager';
-// import { IIntegrationEvent } from '../@core/common/domain/integration-event';
+import { ModuleRef } from '@nestjs/core';
+import { Queue } from 'bull';
+import { ApplicationService } from '../@core/common/application/application.service';
+import { IUnitOfWork } from '../@core/common/application/unit-of-work.interface';
+import { DomainEventManager } from '../@core/common/domain/domain-event-manager';
+import { IIntegrationEvent } from '../@core/common/domain/integration-event';
 import { CustomerService } from '../@core/events/application/customer.service';
 import { EventService } from '../@core/events/application/event.service';
-// import { MyHandlerHandler } from '../@core/events/application/handlers/my-handler.handler';
+import { MyHandlerHandler } from '../@core/events/application/handlers/my-handler.handler';
 import { OrderService } from '../@core/events/application/order.service';
 import { PartnerService } from '../@core/events/application/partner.service';
-// import { PartnerCreated } from '../@core/events/domain/events/domain-events/partner-created.event';
-// import { PartnerCreatedIntegrationEvent } from '../@core/events/domain/events/integration-events/partner-created.int-events';
-import { IUnitOfWork } from '../@core/common/application/unit-of-work.interface';
 import { PaymentGateway } from '../@core/events/application/payment.gateway';
+import { PartnerCreated } from '../@core/events/domain/domain-events/partner-created.event';
+import { PartnerCreatedIntegrationEvent } from '../@core/events/domain/integration-events/partner-created.int-events';
 import { ICustomerRepository } from '../@core/events/domain/repositories/customer-repository.interface';
 import { IEventRepository } from '../@core/events/domain/repositories/event-repository.interface';
 import { IOrderRepository } from '../@core/events/domain/repositories/order-repository.interface';
@@ -33,6 +35,7 @@ import {
   PartnerSchema,
   SpotReservationSchema,
 } from '../@core/events/infra/db/schemas';
+import { ApplicationModule } from '../application/application.module';
 import { CustomersController } from './customers/customers.controller';
 import { PartnersController } from './partners/partners.controller';
 
@@ -47,7 +50,7 @@ import { PartnersController } from './partners/partners.controller';
       OrderSchema,
       SpotReservationSchema,
     ]),
-    // ApplicationModule,
+    ApplicationModule,
     BullModule.registerQueue({
       name: 'integration-events',
     }),
@@ -80,9 +83,11 @@ import { PartnersController } from './partners/partners.controller';
     },
     {
       provide: PartnerService,
-      useFactory: (partnerRepo: IPartnerRepository, uow: IUnitOfWork) =>
-        new PartnerService(partnerRepo, uow),
-      inject: ['IPartnerRepository', 'IUnitOfWork'],
+      useFactory: (
+        partnerRepo: IPartnerRepository,
+        appService: ApplicationService,
+      ) => new PartnerService(partnerRepo, appService),
+      inject: ['IPartnerRepository', ApplicationService],
     },
     {
       provide: CustomerService,
@@ -127,15 +132,40 @@ import { PartnersController } from './partners/partners.controller';
         PaymentGateway,
       ],
     },
-    // {
-    //   provide: MyHandlerHandler,
-    //   useFactory: (
-    //     partnerRepo: IPartnerRepository,
-    //     domainEventManager: DomainEventManager,
-    //   ) => new MyHandlerHandler(partnerRepo, domainEventManager),
-    //   inject: ['IPartnerRepository', DomainEventManager],
-    // },
+    {
+      provide: MyHandlerHandler,
+      useFactory: (
+        partnerRepo: IPartnerRepository,
+        domainEventManager: DomainEventManager,
+      ) => new MyHandlerHandler(partnerRepo, domainEventManager),
+      inject: ['IPartnerRepository', DomainEventManager],
+    },
   ],
   controllers: [PartnersController, CustomersController],
 })
-export class EventsModule {}
+export class EventsModule {
+  constructor(
+    private readonly domainEventManager: DomainEventManager,
+    private moduleRef: ModuleRef,
+    @InjectQueue('integration-events')
+    private integrationEventsQueue: Queue<IIntegrationEvent>,
+  ) {}
+
+  onModuleInit() {
+    MyHandlerHandler.listensTo().forEach((event: string) => {
+      this.domainEventManager.register(event, async (event: any) => {
+        const handler: MyHandlerHandler = await this.moduleRef.resolve(
+          MyHandlerHandler,
+        );
+        await handler.handle(event);
+      });
+    });
+    this.domainEventManager.register(
+      PartnerCreated.name,
+      async (event: PartnerCreated) => {
+        const integrationEvent = new PartnerCreatedIntegrationEvent(event);
+        await this.integrationEventsQueue.add(integrationEvent);
+      },
+    );
+  }
+}
